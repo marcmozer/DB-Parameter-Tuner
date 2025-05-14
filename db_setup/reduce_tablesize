@@ -1,0 +1,39 @@
+-- 1. Neues Schema erstellen
+CREATE SCHEMA IF NOT EXISTS imdb_test;
+
+-- 2. Tabellenstrukturen kopieren (mit 20% der Daten)
+CREATE TABLE imdb_test.titles AS 
+SELECT * FROM public.titles TABLESAMPLE BERNOULLI(20);
+
+CREATE TABLE imdb_test.names AS 
+SELECT * FROM public.names TABLESAMPLE BERNOULLI(20);
+
+CREATE TABLE imdb_test.title_crew AS 
+SELECT * FROM public.title_crew 
+WHERE tconst IN (SELECT tconst FROM imdb_test.titles);
+
+CREATE TABLE imdb_test.title_episode AS 
+SELECT * FROM public.title_episode 
+WHERE parentTconst IN (SELECT tconst FROM imdb_test.titles);
+
+CREATE TABLE imdb_test.title_principals AS 
+SELECT * FROM public.title_principals 
+WHERE tconst IN (SELECT tconst FROM imdb_test.titles) 
+AND nconst IN (SELECT nconst FROM imdb_test.names);
+
+CREATE TABLE imdb_test.title_ratings AS 
+SELECT * FROM public.title_ratings 
+WHERE tconst IN (SELECT tconst FROM imdb_test.titles);
+
+-- 3. Primärschlüssel hinzufügen
+ALTER TABLE imdb_test.titles ADD PRIMARY KEY (tconst);
+ALTER TABLE imdb_test.names ADD PRIMARY KEY (nconst);
+ALTER TABLE imdb_test.title_crew ADD PRIMARY KEY (tconst);
+ALTER TABLE imdb_test.title_episode ADD PRIMARY KEY (tconst);
+ALTER TABLE imdb_test.title_ratings ADD PRIMARY KEY (tconst);
+ALTER TABLE imdb_test.title_principals ADD PRIMARY KEY (tconst, ordering);
+
+-- 4. Tabellenstatistiken aktualisieren
+ANALYZE imdb_test.titles;
+ANALYZE imdb_test.names;
+ANALYZE imdb_test.title_principals;
