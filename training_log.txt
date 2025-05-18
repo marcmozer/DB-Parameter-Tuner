@@ -1,3 +1,15 @@
+Current work_mem: 4.00 MB
+Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
+Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
+Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
+Preparing: SELECT genre, AVG(r.averageRating) FROM (SELECT t.tconst, unnest(string_to_array(t.genres, ',')) AS genre FROM imdb_test.titles t WHERE t.titleType = 'movie') g JOIN imdb_test.title_ratings r ON g.tconst = r.tconst GROUP BY genre HAVING COUNT(*) > 5 ORDER BY AVG(r.averageRating) DESC LIMIT 10;
+Preparing: SELECT e.seasonNumber, e.episodeNumber, t.primaryTitle FROM imdb_test.title_episode e JOIN imdb_test.titles t ON e.tconst = t.tconst WHERE e.parentTconst IN (SELECT tconst FROM imdb_test.titles WHERE primaryTitle LIKE '%Breaking Bad%' LIMIT 1) ORDER BY e.seasonNumber, e.episodeNumber LIMIT 20;
+Preparing: SELECT n.primaryName, AVG(r.averageRating), COUNT(*) as movie_count FROM imdb_test.title_crew c JOIN imdb_test.names n ON n.nconst = ANY(string_to_array(c.directors, ',')) JOIN imdb_test.title_ratings r ON c.tconst = r.tconst GROUP BY n.primaryName HAVING COUNT(*) > 2 ORDER BY AVG(r.averageRating) DESC LIMIT 10;
+Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_test.title_principals p ON t.tconst = p.tconst WHERE p.nconst IN (SELECT nconst FROM imdb_test.names WHERE primaryName LIKE 'Meryl%' LIMIT 1) AND t.titleType = 'movie' ORDER BY t.startYear DESC LIMIT 10;
+Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
+Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
+Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
+Total query time with default: 12.9359 seconds
 Episodes:  30
 
 Episode 1/30
@@ -12,8 +24,8 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 13.3986 seconds
-Reward: -13.3986
+Total query time: 13.4432 seconds
+Reward: -13.4432
 
 Episode 2/30
 Current work_mem: 49.78 MB
@@ -27,11 +39,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 13.1840 seconds
-Reward: -13.1840
+Total query time: 12.6419 seconds
+Reward: -12.6419
 
 Episode 3/30
-Current work_mem: 52.15 MB
+Current work_mem: 44.80 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -42,11 +54,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 12.7674 seconds
-Reward: -12.7674
+Total query time: 13.0484 seconds
+Reward: -13.0484
 
 Episode 4/30
-Current work_mem: 46.94 MB
+Current work_mem: 49.28 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -57,11 +69,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 13.3529 seconds
-Reward: -13.3529
+Total query time: 13.4290 seconds
+Reward: -13.4290
 
 Episode 5/30
-Current work_mem: 51.63 MB
+Current work_mem: 54.21 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -72,11 +84,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 13.3463 seconds
-Reward: -13.3463
+Total query time: 14.2393 seconds
+Reward: -14.2393
 
 Episode 6/30
-Current work_mem: 56.79 MB
+Current work_mem: 48.79 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -87,11 +99,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 12.9715 seconds
-Reward: -12.9715
+Total query time: 13.5870 seconds
+Reward: -13.5870
 
 Episode 7/30
-Current work_mem: 54.27 MB
+Current work_mem: 53.67 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -102,11 +114,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 13.0872 seconds
-Reward: -13.0872
+Total query time: 14.1728 seconds
+Reward: -14.1728
 
 Episode 8/30
-Current work_mem: 59.69 MB
+Current work_mem: 48.30 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -117,11 +129,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 16.4524 seconds
-Reward: -16.4524
+Total query time: 13.8073 seconds
+Reward: -13.8073
 
 Episode 9/30
-Current work_mem: 56.98 MB
+Current work_mem: 49.89 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -132,11 +144,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 14.9638 seconds
-Reward: -14.9638
+Total query time: 13.4372 seconds
+Reward: -13.4372
 
 Episode 10/30
-Current work_mem: 62.68 MB
+Current work_mem: 44.90 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -147,11 +159,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 14.5781 seconds
-Reward: -14.5781
+Total query time: 13.7247 seconds
+Reward: -13.7247
 
 Episode 11/30
-Current work_mem: 60.20 MB
+Current work_mem: 40.41 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -162,11 +174,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 14.1196 seconds
-Reward: -14.1196
+Total query time: 13.0467 seconds
+Reward: -13.0467
 
 Episode 12/30
-Current work_mem: 54.18 MB
+Current work_mem: 44.45 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -177,11 +189,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 14.8579 seconds
-Reward: -14.8579
+Total query time: 13.3645 seconds
+Reward: -13.3645
 
 Episode 13/30
-Current work_mem: 48.76 MB
+Current work_mem: 44.49 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -192,11 +204,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 15.4565 seconds
-Reward: -15.4565
+Total query time: 13.5863 seconds
+Reward: -13.5863
 
 Episode 14/30
-Current work_mem: 43.89 MB
+Current work_mem: 42.45 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -207,11 +219,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 14.2283 seconds
-Reward: -14.2283
+Total query time: 18.1809 seconds
+Reward: -18.1809
 
 Episode 15/30
-Current work_mem: 39.50 MB
+Current work_mem: 46.69 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -222,11 +234,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 14.4026 seconds
-Reward: -14.4026
+Total query time: 14.2167 seconds
+Reward: -14.2167
 
 Episode 16/30
-Current work_mem: 43.45 MB
+Current work_mem: 45.67 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -237,11 +249,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 15.7055 seconds
-Reward: -15.7055
+Total query time: 14.4516 seconds
+Reward: -14.4516
 
 Episode 17/30
-Current work_mem: 45.22 MB
+Current work_mem: 50.23 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -252,11 +264,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 15.7919 seconds
-Reward: -15.7919
+Total query time: 13.6122 seconds
+Reward: -13.6122
 
 Episode 18/30
-Current work_mem: 45.98 MB
+Current work_mem: 50.63 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -267,11 +279,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 15.6491 seconds
-Reward: -15.6491
+Total query time: 13.4927 seconds
+Reward: -13.4927
 
 Episode 19/30
-Current work_mem: 45.11 MB
+Current work_mem: 55.69 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -282,11 +294,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 15.6285 seconds
-Reward: -15.6285
+Total query time: 13.6365 seconds
+Reward: -13.6365
 
 Episode 20/30
-Current work_mem: 46.68 MB
+Current work_mem: 61.26 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -297,11 +309,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 14.5537 seconds
-Reward: -14.5537
+Total query time: 13.8128 seconds
+Reward: -13.8128
 
 Episode 21/30
-Current work_mem: 42.01 MB
+Current work_mem: 64.06 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -312,11 +324,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 17.2186 seconds
-Reward: -17.2186
+Total query time: 13.5341 seconds
+Reward: -13.5341
 
 Episode 22/30
-Current work_mem: 37.81 MB
+Current work_mem: 70.46 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -327,11 +339,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 15.8269 seconds
-Reward: -15.8269
+Total query time: 110.3146 seconds
+Reward: -110.3146
 
 Episode 23/30
-Current work_mem: 37.35 MB
+Current work_mem: 67.04 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -342,11 +354,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 15.2575 seconds
-Reward: -15.2575
+Total query time: 13.8255 seconds
+Reward: -13.8255
 
 Episode 24/30
-Current work_mem: 41.09 MB
+Current work_mem: 60.33 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -357,11 +369,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 14.1610 seconds
-Reward: -14.1610
+Total query time: 14.2707 seconds
+Reward: -14.2707
 
 Episode 25/30
-Current work_mem: 45.19 MB
+Current work_mem: 66.36 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -372,11 +384,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 14.1366 seconds
-Reward: -14.1366
+Total query time: 14.8802 seconds
+Reward: -14.8802
 
 Episode 26/30
-Current work_mem: 49.71 MB
+Current work_mem: 69.17 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -387,11 +399,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 14.1178 seconds
-Reward: -14.1178
+Total query time: 14.0455 seconds
+Reward: -14.0455
 
 Episode 27/30
-Current work_mem: 50.92 MB
+Current work_mem: 76.08 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -402,11 +414,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 15.6482 seconds
-Reward: -15.6482
+Total query time: 14.6010 seconds
+Reward: -14.6010
 
 Episode 28/30
-Current work_mem: 56.01 MB
+Current work_mem: 83.69 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -417,11 +429,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 14.1777 seconds
-Reward: -14.1777
+Total query time: 14.4319 seconds
+Reward: -14.4319
 
 Episode 29/30
-Current work_mem: 61.61 MB
+Current work_mem: 92.06 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -432,11 +444,11 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 14.1987 seconds
-Reward: -14.1987
+Total query time: 13.9147 seconds
+Reward: -13.9147
 
 Episode 30/30
-Current work_mem: 55.45 MB
+Current work_mem: 91.71 MB
 Preparing: SELECT t.primaryTitle, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' ORDER BY r.averageRating DESC LIMIT 10;
 Preparing: SELECT startYear, COUNT(*) FROM imdb_test.titles WHERE titleType = 'movie' AND startYear IS NOT NULL GROUP BY startYear ORDER BY startYear DESC LIMIT 20;
 Preparing: SELECT n.primaryName, COUNT(*) FROM imdb_test.names n JOIN imdb_test.title_principals p ON n.nconst = p.nconst WHERE p.category = 'actor' GROUP BY n.primaryName ORDER BY COUNT(*) DESC LIMIT 10;
@@ -447,10 +459,10 @@ Preparing: SELECT t.primaryTitle, t.startYear FROM imdb_test.titles t JOIN imdb_
 Preparing: SELECT t.primaryTitle, COUNT(*) as episode_count FROM imdb_test.titles t JOIN imdb_test.title_episode e ON t.tconst = e.parentTconst WHERE t.titleType = 'tvSeries' GROUP BY t.primaryTitle HAVING COUNT(*) > 3 ORDER BY COUNT(*) DESC LIMIT 5;
 Preparing: SELECT t.primaryTitle, t.startYear, r.averageRating FROM imdb_test.titles t JOIN imdb_test.title_ratings r ON t.tconst = r.tconst WHERE t.titleType = 'movie' AND t.startYear BETWEEN 2000 AND 2010 AND r.averageRating > 7.0 ORDER BY r.averageRating DESC LIMIT 15;
 Preparing: SELECT n1.primaryName AS actor1, n2.primaryName AS actor2, COUNT(*) FROM imdb_test.title_principals p1 JOIN imdb_test.title_principals p2 ON p1.tconst = p2.tconst AND p1.nconst < p2.nconst JOIN imdb_test.names n1 ON p1.nconst = n1.nconst JOIN imdb_test.names n2 ON p2.nconst = n2.nconst WHERE p1.category = 'actor' AND p2.category = 'actor' GROUP BY n1.primaryName, n2.primaryName HAVING COUNT(*) > 1 ORDER BY COUNT(*) DESC LIMIT 5;
-Total query time: 14.1831 seconds
-Reward: -14.1831
+Total query time: 14.8498 seconds
+Reward: -14.8498
 
-Optimal work_mem setting: 46.94 MB
-Query time at optimal setting: 12.7674 seconds
+Optimal work_mem setting: 44.80 MB
+Query time at optimal setting: 12.6419 seconds
 
-Optimization complete. Recommended work_mem setting: 46.94 MB
+Optimization complete. Recommended work_mem setting: 44.80 MB

@@ -151,6 +151,14 @@ class WorkMemOptimizer:
         """Reward is a negative of query time, so minimizing time maximizes reward"""
         return -query_time
     
+    def test_with_default(self):
+        """ Executes the query set with the default work_mem value"""
+        default_mem = 4
+        self.set_work_mem(default_mem)
+        print(f"Current work_mem: {default_mem:.2f} MB")
+        query_time = self.execute_test_queries()
+        print(f"Total query time with default: {query_time:.4f} seconds")
+    
     def train(self):
         """Trains the RL agent"""
         current_mem = np.sqrt(self.memory_min * self.memory_max)
@@ -237,6 +245,7 @@ if __name__ == "__main__":
         episodes=30
     )
     
+    optimizer.test_with_default()
     optimizer.train()
     optimal_mem = optimizer.find_optimal_setting()
     optimizer.plot_results()
