@@ -4,6 +4,7 @@ import time
 import matplotlib.pyplot as plt
 from collections import deque
 import random
+import sys
 
 class WorkMemOptimizer:
     def __init__(self, db_params, memory_range=(4, 1024), episodes=50):
@@ -146,17 +147,14 @@ class WorkMemOptimizer:
             
         return max(self.memory_min, min(self.memory_max, new_mem))
     
-    def calculate_reward(self, query_time, work_mem):
-        """Calculates reward based on query time and memory usage"""
-        time_reward = 1.0 / (query_time + 0.1)
-        memory_penalty = np.log(work_mem) / np.log(self.memory_max)
-        reward = time_reward - 0.2 * memory_penalty
-        return reward
+    def calculate_reward(self, query_time):
+        """Reward is a negative of query time, so minimizing time maximizes reward"""
+        return -query_time
     
     def train(self):
         """Trains the RL agent"""
         current_mem = np.sqrt(self.memory_min * self.memory_max)
-        
+        print("Episodes: ", self.episodes)
         for episode in range(self.episodes):
             print(f"\nEpisode {episode+1}/{self.episodes}")
             
@@ -167,7 +165,7 @@ class WorkMemOptimizer:
             query_time = self.execute_test_queries()
             print(f"Total query time: {query_time:.4f} seconds")
             
-            reward = self.calculate_reward(query_time, current_mem)
+            reward = self.calculate_reward(query_time)
             print(f"Reward: {reward:.4f}")
             
             action = self.get_action(current_state)
@@ -223,6 +221,9 @@ class WorkMemOptimizer:
 
 # Example usage
 if __name__ == "__main__":
+    log_file = open("training_log.txt", "w")
+    sys.stdout = log_file
+    
     db_params = {
         "host": "localhost",
         "database": "imdb_performance_tuning",
@@ -241,3 +242,7 @@ if __name__ == "__main__":
     optimizer.plot_results()
     
     print(f"\nOptimization complete. Recommended work_mem setting: {optimal_mem:.2f} MB")
+
+    # Restore stdout and close the log file
+    sys.stdout = sys.__stdout__
+    log_file.close()
