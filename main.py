@@ -79,15 +79,45 @@ class WorkMemOptimizer:
         bucket = int(normalized * (self.state_buckets - 1))
         return max(0, min(bucket, self.state_buckets - 1))
     
+    def get_postgresql_work_mem(self):
+        """
+        Retrieves and prints the current work_mem value from a PostgreSQL database.
+        """
+        try:
+            # Establish a connection to the PostgreSQL database
+            conn = psycopg2.connect(**self.db_params)
+            cursor = conn.cursor()
+
+            # Execute the query to get the current work_mem value
+            cursor.execute("SHOW work_mem;")
+
+            # Fetch the result
+            work_mem_value = cursor.fetchone()[0]
+
+            # Close the cursor and connection
+            cursor.close()
+            conn.close()
+
+        except psycopg2.Error as e:
+            print(f"Error connecting to or querying the database: {e}")
+            sys.exit(1)
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            sys.exit(1)
+        return work_mem_value
+
     def set_work_mem(self, value_mb):
         """Sets the work_mem parameter in the database"""
         value_mb = max(self.memory_min, min(self.memory_max, value_mb))
         try:
             conn = psycopg2.connect(**self.db_params)
+            conn.autocommit = True 
             try:
                 with conn.cursor() as cur:
-                    cur.execute(f"SET work_mem = '{value_mb}MB';")
-                conn.commit()
+                    cur.execute(f"ALTER SYSTEM SET work_mem = '{value_mb}MB';")
+                    cur.execute("SELECT pg_reload_conf();")
+               
+                
             finally:
                 conn.close()
         except Exception as e:
@@ -164,10 +194,16 @@ class WorkMemOptimizer:
         current_mem = np.sqrt(self.memory_min * self.memory_max)
         print("Episodes: ", self.episodes)
         for episode in range(self.episodes):
+            
+            
+
             print(f"\nEpisode {episode+1}/{self.episodes}")
             
             current_mem = self.set_work_mem(current_mem)
-            print(f"Current work_mem: {current_mem:.2f} MB")
+            actual_mem = self.get_postgresql_work_mem()
+            print(f"Set work_mem to: {current_mem:.2f} MB")
+            print(f"Currently set work_mem = {float(actual_mem.lower().replace('kb', '')) / 1024}") #test if value is set in database (first converts output to float)
+
             
             current_state = self.state_to_bucket(current_mem)
             query_time = self.execute_test_queries()
@@ -242,7 +278,7 @@ if __name__ == "__main__":
     optimizer = WorkMemOptimizer(
         db_params=db_params,
         memory_range=(4, 512),  # 4MB to 512MB
-        episodes=30
+        episodes=50
     )
     
     optimizer.test_with_default()
